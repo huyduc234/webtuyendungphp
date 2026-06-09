@@ -1,0 +1,205 @@
+<?php
+
+switch ($act) {
+
+    case 'admin':
+
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $totalUsers = countUserId();
+        $totalRecr = countRecr();
+        $info = countIn4();
+        $user = countUser(2);
+        $corp = countUser(3);
+        $approved =  status( 'Đã xét duyệt');
+        $rejected = status('Từ chối');
+        $wait = status( 'Chờ xét duyệt');
+        include('view/admin/thongke.php');
+        break;
+
+    case 'account':           // Danh Sách Admin
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $totalUsers = countUserId();
+        $admin = countUser(1);
+        $user = countUser(2);
+        $corp = countUser(3);
+
+
+        // $id = isset($_GET['id']) ? $_GET['id'] : '';
+        // $username = isset($_GET['username']) ? $_GET['username'] : '';
+        // $name = isset($_GET['name']) ? $_GET['name'] : '';
+        // $email = isset($_GET['email']) ? $_GET['email'] : '';
+        // $phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+        // $address = isset($_GET['address']) ? $_GET['address'] : '';
+        // $role = isset($_GET['role']) ? $_GET['role'] : '';
+        $listadmin = list_admin($id, $username, $name, $email, $phone, $address, $role);
+        $listuser = list_user();
+        include 'view/admin/account.php';
+        break;
+
+    case 'listadmin':           // Danh Sách Admin
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $role = 1;
+        $userCount = countUser($role);
+
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        $username = isset($_GET['username']) ? $_GET['username'] : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        $email = isset($_GET['email']) ? $_GET['email'] : '';
+        $phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+        $address = isset($_GET['address']) ? $_GET['address'] : '';
+
+        $listadmin = list_admin($id, $username, $name, $email, $phone, $address, $role);
+        include 'view/admin/listadmin.php';
+        break;
+
+    case 'listcv':           // Danh Sách Ứng Viên
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $role = 2;
+        $userCount = countUser($role);
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        $username = isset($_GET['username']) ? $_GET['username'] : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        $email = isset($_GET['email']) ? $_GET['email'] : '';
+        $phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+        $address = isset($_GET['address']) ? $_GET['address'] : '';
+
+        $listcv = list_admin($id, $username, $name, $email, $phone, $address, $role);
+        include 'view/admin/listCV.php';
+        break;
+
+    case 'listcorp':           // Danh Sách Doanh nghiệp 
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $role = 3;
+        $userCount = countUser($role);
+
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        $idcorp = isset($_GET['idcorp']) ? $_GET['idcorp'] : '';
+        $username = isset($_GET['username']) ? $_GET['username'] : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        $email = isset($_GET['email']) ? $_GET['email'] : '';
+        $phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+        $address = isset($_GET['address']) ? $_GET['address'] : '';
+
+        $listcorp = list_corp_admin($id,$idcorp, $username, $name, $email, $phone, $address, $role);
+        include 'view/admin/listCorp.php';
+        break;
+
+    case 'listrecr':           // Danh Sách Bài Tuyển Dụng
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+
+        $id = isset($_GET['id']) ? $_GET['id'] : '';
+        $name = isset($_GET['name']) ? $_GET['name'] : '';
+        $job = isset($_GET['job']) ? $_GET['job'] : '';
+        $salary = isset($_GET['salary']) ? $_GET['salary'] : '';
+        $start = isset($_GET['phone']) ? $_GET['phone'] : '';
+        $end = isset($_GET['end']) ? $_GET['end'] : '';
+
+        $listrecr = list_recr($id, $name, $job, $salary, $start, $end);
+        $totalRecr = countRecr();
+        $info = countIn4();
+        $approved = countRecrStatus(1);
+        $rejected = countRecrStatus(2); 
+
+        include 'view/admin/listRecr.php';
+        break;
+
+    case 'thongke':           // Danh Sách Thống Kê 
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        include 'view/admin/navAdmin.php';
+        include 'view/admin/thongke.php';
+        break;
+
+    case 'signupAdmin':           // Đăng Ký Admin 
+        $id = $_SESSION['username']['id'];
+        $admin = manageAdmin($id);
+        extract($admin);
+        if (isset($_POST['signupAdmin'])) {
+            $username = $_POST['username'];
+            $pass = $_POST['pass'];
+            $phone = $_POST['phone'];
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $role = $_POST['role'];
+            $thongbao = "<script> alert('Đã Tạo Tài Khoản Admin !');
+            location.href = 'index.php?act=listadmin'; </script>";
+            echo $thongbao;
+            add_admin($username, $pass, $name, $email, $phone, $role);
+        }
+        include 'view/admin/signupAdmin.php';
+        break;
+
+    case 'delete':           // Danh Sách Xóa Tài Khoản
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            delete_admin($id);
+            $thongbao = "<script> alert('Bạn đã XÓA thành công !');
+            location.href = 'index.php?act=admin'; </script>";
+            echo $thongbao;
+        }
+        break;
+    case 'info_recr':
+
+        if(isset($_GET['id']))
+         {
+        $id = $_GET['id'];
+
+        $recr = recr_select_by_id($id);
+
+        include 'view/admin/infoRecr.php';
+        }
+
+    break;
+    case 'recr_delete':
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            recr_delete($id);
+            $thongbao = "<script> alert('Bạn đã XÓA thành công !');
+                    location.href = 'index.php?act=listrecr'; </script>";
+            echo $thongbao;
+        }
+    case 'recr_status':
+
+    if(isset($_GET['id']) && isset($_GET['status']))
+    {
+        update_recr_status($_GET['id'], $_GET['status']);
+
+        if($_GET['status'] == 1){
+            echo "<script>
+                alert('Duyệt tin tuyển dụng thành công!');
+                window.location.href = 'index.php?act=listrecr';
+            </script>";
+        } else {
+            echo "<script>
+                alert('Từ chối tin tuyển dụng thành công!');
+                window.location.href = 'index.php?act=listrecr';
+            </script>";
+        }
+    }
+
+    break;
+}
